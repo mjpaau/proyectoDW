@@ -1,5 +1,5 @@
 from config.wsgi import *
-from core.erp.models import Type, Employee
+from core.erp.models import *
 
 # Listar
 
@@ -56,5 +56,10 @@ from core.erp.models import Type, Employee
 
 
 # Ejemplo con tablas relacionadas
-obj = Employee.objects.filter(type_id = 1) # de esta manera se realizaría la consulta
-# del empleado con respecto al tipo
+# obj = Employee.objects.filter(type_id = 1) # de esta manera se realizaría la consulta
+# # del empleado con respecto al tipo
+
+# Listar
+
+for i in Category.objects.filter():
+    print(i)
