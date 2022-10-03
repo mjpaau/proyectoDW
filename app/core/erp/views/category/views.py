@@ -1,6 +1,7 @@
 from django.contrib.auth.decorators import login_required
 from django.http import JsonResponse
 from django.shortcuts import render, redirect
+from django.urls import reverse_lazy
 from django.views.decorators.csrf import csrf_exempt
 from django.views.generic import ListView, CreateView
 from django.utils.decorators import method_decorator
@@ -20,9 +21,6 @@ def category_list(request):
 class CategoryListView(ListView):
     model = Category
     template_name = 'category/list.html'
-
-    # def get_queryset(self):
-    #     return Category.objects.filter(name__startswith='L')
 
     @method_decorator(csrf_exempt)
     def dispatch(self, request, *args, **kwargs):
@@ -46,3 +44,9 @@ class CategoryCreateView(CreateView):
     model = Category
     form_class = CategoryForm
     template_name = 'category/create.html'
+    success_url = reverse_lazy('erp:category_list')
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['title'] = 'Creacion de Categoría'
+        return context
