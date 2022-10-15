@@ -1,65 +1,20 @@
 from config.wsgi import *
 from core.erp.models import *
+import random
 
-# Listar
+# data = ['Leche y derivados', 'Carnes, pescados y huevos', 'Patatas, legumbres, frutos secos',
+#         'Verduras y Hortalizas', 'Frutas', 'Cereales y derivados, azúcar y dulces',
+#         'Grasas, aceite y mantequilla']
 
-# # select * from tabla
-# query = Type.objects.all()
-#
-# print(query)
+# delete from public.erp_category;
+# ALTER SEQUENCE erp_category_id_seq RESTART WITH 1;
 
-# # Insercion
-# t = Type()
-# t.name = 'Prueba'
-# t.save()
+letters = ['a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l', 'm', 'n', 'o', 'p', 'q', 'r', 's', 't',
+           'u', 'v', 'w', 'x', 'y', 'z']
 
-# # Edicion
-# try:
-#     t = Type.objects.get(id=3)
-#     t.name = 'Presidente'
-#     t.save()
-# except Exception as e:
-#     print(e)
-
-# # Eliminacion
-# t = Type.objects.get(pk=3)
-# t.delete()
-
-# contains funciona como un like, icontains funciona de forma similar solo
-# que no toma en cuenta si está en mayuscula o minuscula
-# obj = Type.objects.filter(name__icontains='pre')
-
-# las que empiezan con
-# obj = Type.objects.filter(name__startswith='P')
-
-# las que terminan con
-# obj = Type.objects.filter(name__endswith='a')
-
-
-# se crea un vector solicitando esos datos exactos a la bd
-# obj = Type.objects.filter(name__in=['viba', 'hola'])
-
-# .count() permite devolver la cantidad de los elementos
-# obj = Type.objects.filter(name__in=['viba', 'hola']).count()
-
-
-# .query devuelve la consulta SQL que está realizando el comando
-# obj = Type.objects.filter(name__icontains='pre').query
-
-
-# si se quiere excluir un elemento exacto se debe colocar .exclude()
-# obj = Type.objects.filter(name__endswith='a').exclude(id = 5)
-
-# si se quiere iterar los valores se debe utilizar un for
-# for i in Type.objects.filter(name__endswith='a'):
-#     print(i.name)
-
-
-# Ejemplo con tablas relacionadas
-# obj = Employee.objects.filter(type_id = 1) # de esta manera se realizaría la consulta
-# # del empleado con respecto al tipo
-
-# Listar
-
-for i in Category.objects.filter():
-    print(i)
+for i in range(1, 6000):
+    name = ''.join(random.choices(letters, k=5))
+    while Category.objects.filter(name=name).exists():
+        name = ''.join(random.choices(letters, k=5))
+    Category(name=name).save()
+    print('Guardado registro {}'.format(i))
