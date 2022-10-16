@@ -1,5 +1,4 @@
-from django.forms import ModelForm, TextInput, Textarea
-
+from django.forms import ModelForm, TextInput, Textarea, forms
 from core.erp.models import Category
 
 
@@ -41,3 +40,11 @@ class CategoryForm(ModelForm):
         except Exception as e:
             data['error'] = str(e)
         return data
+
+
+    def clean(self):
+        cleaned = super().clean()
+        if len(cleaned['name']) <= 50:
+            raise forms.ValidationError('Validacion xxx')
+            # self.add_error('name', 'Le faltan caracteres')
+            return cleaned

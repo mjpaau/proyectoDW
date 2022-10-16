@@ -40,6 +40,7 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'core.erp',
     'widget_tweaks',
+    'core.homepage',
 ]
 
 
