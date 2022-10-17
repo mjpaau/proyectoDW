@@ -11,6 +11,9 @@ https://docs.djangoproject.com/en/4.1/ref/settings/
 """
 import os
 from pathlib import Path
+
+from django.conf.global_settings import LOGOUT_REDIRECT_URL
+
 import config.db as db
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
@@ -130,4 +133,8 @@ STATICFILES_DIRS = [
     '/var/www/static/',
 ]
 
-LOGIN_REDIRECT_URL = '/erp/category/list'
+LOGIN_REDIRECT_URL = '/erp/dashboard'
+
+LOGOUT_REDIRECT_URL = '/login/'
+
+LOGIN_URL = '/login/'
