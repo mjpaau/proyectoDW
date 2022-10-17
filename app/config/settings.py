@@ -41,6 +41,7 @@ INSTALLED_APPS = [
     'core.erp',
     'widget_tweaks',
     'core.homepage',
+    'core.login',
 ]
 
 
@@ -128,3 +129,5 @@ STATICFILES_DIRS = [
     BASE_DIR / "static",
     '/var/www/static/',
 ]
+
+LOGIN_REDIRECT_URL = '/erp/category/list'
