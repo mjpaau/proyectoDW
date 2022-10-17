@@ -49,7 +49,6 @@ class CategoryCreateView(CreateView):
 
     @method_decorator(login_required)
     def dispatch(self, request, *args, **kwargs):
-        self.object = self.get_object()
         return super().dispatch(request, *args, **kwargs)
 
     def post(self, request, *args, **kwargs):
@@ -61,7 +60,6 @@ class CategoryCreateView(CreateView):
                 data = form.save()
             else:
                 data['error'] = 'No ha ingresado ninguna opción'
-            # data = Category.objects.get(pk=request.POST['id']).toJSON()
         except Exception as e:
             data['error'] = str(e)
         return JsonResponse(data)
@@ -100,8 +98,6 @@ class CategoryUpdateView(UpdateView):
         return JsonResponse(data)
 
     def get_context_data(self, **kwargs):
-        # print(self.object)
-        # print(self.get_object())
         context = super().get_context_data(**kwargs)
         context['title'] = 'Edicion de Categoría'
         context['entity'] = 'Categorias'
@@ -129,8 +125,6 @@ class CategoryDeleteView(DetailView):
         return JsonResponse(data)
 
     def get_context_data(self, **kwargs):
-        # print(self.object)
-        # print(self.get_object())
         context = super().get_context_data(**kwargs)
         context['title'] = 'Eliminacion de Categoría'
         context['entity'] = 'Categorias'
