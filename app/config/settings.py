@@ -45,6 +45,7 @@ INSTALLED_APPS = [
     'widget_tweaks',
     'core.homepage',
     'core.login',
+    'core.user',
 ]
 
 
@@ -142,3 +143,5 @@ LOGIN_URL = '/login/'
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media/')
 
 MEDIA_URL = '/media/'
+
+AUTH_USER_MODEL = 'user.User'
