@@ -1,36 +1,29 @@
-from crum import get_current_user
-from django.db import models
 from datetime import datetime
+
+from django.db import models
 from django.forms import model_to_dict
+
 from config.settings import MEDIA_URL, STATIC_URL
 from core.erp.choices import gender_choices
 from core.models import BaseModel
 
 
-class Category(BaseModel):
+class Category(models.Model):
     name = models.CharField(max_length=150, verbose_name='Nombre', unique=True)
     desc = models.CharField(max_length=500, null=True, blank=True, verbose_name='Descripción')
 
     def __str__(self):
         return self.name
 
-    def save(self, force_insert=False, force_update=False, using=None, update_fields=None):
-        user = get_current_user()
-        if user is not None:
-            if not self.pk:
-                self.user_create = user
-            else:
-                self.user_updated = user
-        super(Category, self).save()
-
     def toJSON(self):
-        item = model_to_dict(self, exclude=['user_create', 'user_updated'])
+        item = model_to_dict(self)
         return item
 
     class Meta:
         verbose_name = 'Categoria'
         verbose_name_plural = 'Categorias'
         ordering = ['id']
+
 
 class Product(models.Model):
     name = models.CharField(max_length=150, verbose_name='Nombre', unique=True)
@@ -40,6 +33,13 @@ class Product(models.Model):
 
     def __str__(self):
         return self.name
+
+    def toJSON(self):
+        item = model_to_dict(self)
+        item['cat'] = self.cat.toJSON()
+        item['image'] = self.get_image()
+        item['pvp'] = format(self.pvp, '.2f')
+        return item
 
     def get_image(self):
         if self.image:
@@ -51,10 +51,11 @@ class Product(models.Model):
         verbose_name_plural = 'Productos'
         ordering = ['id']
 
+
 class Client(models.Model):
     names = models.CharField(max_length=150, verbose_name='Nombres')
     surnames = models.CharField(max_length=150, verbose_name='Apellidos')
-    dpi = models.CharField(max_length=10, unique=True, verbose_name='DPI')
+    dpi = models.CharField(max_length=10, unique=True, verbose_name='Dpi')
     date_birthday = models.DateField(default=datetime.now, verbose_name='Fecha de nacimiento')
     address = models.CharField(max_length=150, null=True, blank=True, verbose_name='Dirección')
     gender = models.CharField(max_length=10, choices=gender_choices, default='male', verbose_name='Sexo')
@@ -73,6 +74,7 @@ class Client(models.Model):
         verbose_name_plural = 'Clientes'
         ordering = ['id']
 
+
 class Sale(models.Model):
     cli = models.ForeignKey(Client, on_delete=models.CASCADE)
     date_joined = models.DateField(default=datetime.now)
@@ -87,6 +89,7 @@ class Sale(models.Model):
         verbose_name = 'Venta'
         verbose_name_plural = 'Ventas'
         ordering = ['id']
+
 
 class DetSale(models.Model):
     sale = models.ForeignKey(Sale, on_delete=models.CASCADE)

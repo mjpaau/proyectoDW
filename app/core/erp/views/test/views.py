@@ -9,7 +9,7 @@ from core.erp.models import Product, Category
 
 
 class TestView(TemplateView):
-    template_name = 'test.html'
+    template_name = 'tests.html'
 
     @method_decorator(csrf_exempt)
     @method_decorator(login_required)
@@ -21,7 +21,7 @@ class TestView(TemplateView):
         try:
             action = request.POST['action']
             if action == 'search_product_id':
-                data = [{'id': '', 'text': '-------------'}]
+                data = [{'id': '', 'text': '------------'}]
                 for i in Product.objects.filter(cat_id=request.POST['id']):
                     data.append({'id': i.id, 'text': i.name, 'data': i.cat.toJSON()})
             elif action == 'autocomplete':
@@ -38,6 +38,6 @@ class TestView(TemplateView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        context['title'] = 'Select anidado | django'
+        context['title'] = 'Select Aninados | Django'
         context['form'] = TestForm()
         return context

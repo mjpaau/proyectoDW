@@ -4,7 +4,7 @@
             <a class="nav-link" data-widget="pushmenu" href="#" role="button"><i class="fas fa-bars"></i></a>
         </li>
         <li class="nav-item d-none d-sm-inline-block">
-            <a href="#" class="nav-link">Home</a>
+            <a href="{% url 'erp:dashboard' %}" class="nav-link">Home</a>
         </li>
     </ul>
     <ul class="navbar-nav ml-auto">
@@ -14,7 +14,7 @@
             </a>
             <div class="dropdown-menu dropdown-menu-lg dropdown-menu-right">
                     <span class="dropdown-header">
-                        Último Acceso: 12 de Abril de 2020
+                        Último Acceso: {{ request.user.last_login }}
                     </span>
                 <div class="dropdown-divider"></div>
                 <a href="#" class="dropdown-item">

@@ -1,7 +1,11 @@
 {% extends 'layout.html' %}
 {% load widget_tweaks %}
-{% block content %}
+{% block head %}
+    {% block head_form %}
 
+    {% endblock %}
+{% endblock %}
+{% block content %}
 <form method="post" action="." enctype="multipart/form-data">
     <div class="card card-default">
         <div class="card-header">

@@ -30,7 +30,6 @@ class CategoryForm(ModelForm):
                 }
             )
         }
-        exclude = ['user_updated', 'user_create']
 
     def save(self, commit=True):
         data = {}
@@ -45,13 +44,6 @@ class CategoryForm(ModelForm):
         return data
 
 
-    # def clean(self):
-    #     cleaned = super().clean()
-    #     if len(cleaned['name']) <= 50:
-    #         raise forms.ValidationError('Validacion xxx')
-    #         # self.add_error('name', 'Le faltan caracteres')
-    #         return cleaned
-
 class ProductForm(ModelForm):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
@@ -64,6 +56,12 @@ class ProductForm(ModelForm):
             'name': TextInput(
                 attrs={
                     'placeholder': 'Ingrese un nombre',
+                }
+            ),
+            'cat': Select(
+                attrs={
+                    'class': 'select2',
+                    'style': 'width: 100%'
                 }
             ),
         }
@@ -138,7 +136,6 @@ class ClientForm(ModelForm):
             ),
             'gender': Select()
         }
-        exclude = ['user_updated', 'user_creation']
 
     def save(self, commit=True):
         data = {}
