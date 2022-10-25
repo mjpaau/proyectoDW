@@ -125,11 +125,12 @@ class ClientForm(ModelForm):
                     'placeholder': 'Ingrese su dpi',
                 }
             ),
-            'date_birthday': DateInput(format='%Y-%m-%d',
-                                       attrs={
-                                           'value': datetime.now().strftime('%Y-%m-%d'),
-                                       }
-                                       ),
+            'date_birthday': DateInput(
+                format='%Y-%m-%d',
+                attrs={
+                    'value': datetime.now().strftime('%Y-%m-%d'),
+                }
+            ),
             'address': TextInput(
                 attrs={
                     'placeholder': 'Ingrese su dirección',
@@ -185,7 +186,7 @@ class SaleForm(ModelForm):
                 }
             ),
             'iva': TextInput(attrs={
-                'class': 'form-control',
+                'class': 'form-control'
             }),
             'subtotal': TextInput(attrs={
                 'readonly': True,
