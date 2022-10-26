@@ -182,6 +182,8 @@ $(function () {
         alert_action('Notificación', '¿Estas seguro de eliminar todos los items de tu detalle?', function () {
             vents.items.products = [];
             vents.list();
+        }, function () {
+
         });
     });
 
@@ -193,6 +195,8 @@ $(function () {
             alert_action('Notificación', '¿Estas seguro de eliminar este producto?', function () {
                 vents.items.products.splice(tr.row, 1);
                 vents.list();
+            }, function () {
+
             });
         })
         .on('change', 'input[name="cant"]', function () {
@@ -222,8 +226,14 @@ $(function () {
         var parameters = new FormData(this);
         parameters.append('action', $('input[name="action"]').val());
         parameters.append('vents', JSON.stringify(vents.items));
-        submit_with_ajax(window.location.pathname, 'Notificación', '¿Está seguro de realizar la siguiente acción?', parameters, function() {
-            location.href = '/erp/sale/list/';
+        submit_with_ajax(window.location.pathname,
+            'Notificación', '¿Está seguro de realizar la siguiente acción?', parameters, function(response) {
+            alert_action('Notificación', '¿Desea imprimir la boleta de venta?', function () {
+                window.open('/erp/sale/invoice/pdf/'+response.id+'/', '_blank')
+                location.href = '/erp/sale/list/';
+            }, function () {
+                location.href = '/erp/sale/list/';
+            })
         });
     });
 
