@@ -77,7 +77,17 @@
         //var parameters = $(this).serializeArray();
         var parameters = new FormData(this);
         submit_with_ajax(window.location.pathname, 'Notificación', '¿Está seguro de realizar la siguiente acción?', parameters, function() {
-            location.href = '{{ list_url }}';
+            Swal.fire({
+                title: 'Alerta',
+                text: 'Registro ingresado correctamente',
+                icon: 'success',
+                timer: 2000,
+                onClose: () => {
+                    location.href = '{{ list_url }}';
+                }
+            }).then((result) => {
+
+            });;
         });
     });
 </script>
