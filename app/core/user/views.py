@@ -1,7 +1,9 @@
 from django.contrib.auth.mixins import LoginRequiredMixin
-from django.http import JsonResponse
+from django.contrib.auth.models import Group
+from django.http import JsonResponse, HttpResponseRedirect
 from django.urls import reverse_lazy
 from django.utils.decorators import method_decorator
+from django.views import View
 from django.views.decorators.csrf import csrf_exempt
 from django.views.generic import ListView, CreateView, UpdateView, DeleteView
 
@@ -134,3 +136,13 @@ class UserDeleteView(LoginRequiredMixin, ValidatePermissionRequiredMixin, Delete
         context['entity'] = 'Usuarios'
         context['list_url'] = self.success_url
         return context
+
+
+class UserChangeGroup(LoginRequiredMixin, View):
+
+    def get(self, request, *args, **kwargs):
+        try:
+            request.session['group'] = Group.objects.get(pk=self.kwargs['pk'])
+        except:
+            pass
+        return HttpResponseRedirect(reverse_lazy('erp:dashboard'))
