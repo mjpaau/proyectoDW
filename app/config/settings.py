@@ -142,3 +142,12 @@ MEDIA_URL = '/media/'
 AUTH_USER_MODEL = 'user.User'
 
 SESSION_SERIALIZER = 'django.contrib.sessions.serializers.PickleSerializer'
+
+EMAIL_HOST = 'smtp.mailtrap.io'
+
+EMAIL_PORT = '2525'
+
+EMAIL_HOST_USER = 'e797819329f629'
+
+EMAIL_HOST_PASSWORD = 'e0acca993e2727'
+
