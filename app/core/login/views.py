@@ -1,4 +1,5 @@
 import smtplib
+import uuid
 from email.mime.multipart import MIMEMultipart
 from email.mime.text import MIMEText
 
@@ -14,7 +15,7 @@ from django.views.decorators.csrf import csrf_exempt
 from django.views.generic import FormView, RedirectView
 
 from config import settings
-from core.login.forms import ResetPasswordForm
+from core.login.forms import ResetPasswordForm, ChangePasswordForm
 from core.user.models import User
 
 
@@ -72,6 +73,10 @@ class ResetPasswordView(FormView):
     def send_email_reset_pwd(self, user):
         data = {}
         try:
+            URL = settings.DOMAIN if not settings.DEBUG else self.request.META['HTTP_HOST']
+            user.token = uuid.uuid4()
+            user.save()
+
             mailServer = smtplib.SMTP(settings.EMAIL_HOST, settings.EMAIL_PORT)
             mailServer.starttls()
             mailServer.login(settings.EMAIL_HOST_USER, settings.EMAIL_HOST_PASSWORD)
@@ -84,8 +89,8 @@ class ResetPasswordView(FormView):
 
             content = render_to_string('login/send_email.html', {
                 'user': user,
-                'link_resetpwd': '',
-                'link_home': ''
+                'link_resetpwd': 'http://{}/login/change/password/{}/'.format(URL, str(user.token)),
+                'link_home': 'http://{}'.format(URL)
             })
             mensaje.attach(MIMEText(content, 'html'))
 
@@ -110,11 +115,44 @@ class ResetPasswordView(FormView):
             data['error'] = str(e)
         return JsonResponse(data, safe=False)
 
-    def form_valid(self, form):
-        pass
-        return HttpResponseRedirect(self.success_url)
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['title'] = 'Reseteo de Contraseña'
+        return context
+
+
+class ChangePasswordView(FormView):
+    form_class = ChangePasswordForm
+    template_name = 'login/changepwd.html'
+    success_url = reverse_lazy(settings.LOGIN_REDIRECT_URL)
+
+    @method_decorator(csrf_exempt)
+    def dispatch(self, request, *args, **kwargs):
+        return super().dispatch(request, *args, **kwargs)
+
+    def get(self, request, *args, **kwargs):
+        token = self.kwargs['token']
+        if User.objects.filter(token=token).exists():
+            return super().get(request, *args, **kwargs)
+        return HttpResponseRedirect('/')
+
+    def post(self, request, *args, **kwargs):
+        data = {}
+        try:
+            form = ChangePasswordForm(request.POST)
+            if form.is_valid():
+                user = User.objects.get(token=self.kwargs['token'])
+                user.set_password(request.POST['password'])
+                user.token = uuid.uuid4()
+                user.save()
+            else:
+                data['error'] = form.errors
+        except Exception as e:
+            data['error'] = str(e)
+        return JsonResponse(data, safe=False)
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context['title'] = 'Reseteo de Contraseña'
+        context['login_url'] = settings.LOGIN_URL
         return context
