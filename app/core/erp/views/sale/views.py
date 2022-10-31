@@ -75,11 +75,14 @@ class SaleCreateView(LoginRequiredMixin, ValidatePermissionRequiredMixin, Create
             action = request.POST['action']
             if action == 'search_products':
                 data = []
-                clients = Product.objects.filter(name__icontains=request.POST['term'])[0:10]
-                for i in clients:
+                term = request.POST['term']
+                products = Product.objects.filter()
+                if len(term):
+                    products = products.filter(name__icontains=term)
+                for i in products:
                     item = i.toJSON()
-                    # item['value'] = i.name
-                    item['text'] = i.name
+                    item['value'] = i.name
+                    # item['text'] = i.name
                     data.append(item)
             elif action == 'add':
                 with transaction.atomic():
@@ -154,10 +157,14 @@ class SaleUpdateView(LoginRequiredMixin, ValidatePermissionRequiredMixin, Update
             action = request.POST['action']
             if action == 'search_products':
                 data = []
-                prods = Product.objects.filter(name__icontains=request.POST['term'])[0:10]
-                for i in prods:
+                term = request.POST['term']
+                products = Product.objects.filter()
+                if len(term):
+                    products = products.filter(name__icontains=term)
+                for i in products:
                     item = i.toJSON()
                     item['value'] = i.name
+                    # item['text'] = i.name
                     data.append(item)
             elif action == 'edit':
                 with transaction.atomic():
