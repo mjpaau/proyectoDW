@@ -98,6 +98,10 @@ function formatRepo(repo) {
         return repo.text;
     }
 
+    if (!Number.isInteger(repo.id)) {
+        return repo.text;
+    }
+
     var option = $(
         '<div class="wrapper container">'+
         '<div class="row">' +
@@ -196,7 +200,7 @@ $(function () {
 
     // search products
 
-    $('input[name="search"]').autocomplete({
+    /*$('input[name="search"]').autocomplete({
         source: function (request, response) {
             $.ajax({
                 url: window.location.pathname,
@@ -225,7 +229,7 @@ $(function () {
             vents.add(ui.item);
             $(this).val('');
         }
-    });
+    });*/
 
     $('.btnRemoveAll').on('click', function () {
         if(vents.items.products.length === 0) return false;
@@ -274,7 +278,7 @@ $(function () {
                 type: 'POST',
                 data: {
                     'action': 'search_products',
-                    'term': $('input[name="search"]').val()
+                    'term': $('select[name="search"]').val()
                 },
                 dataSrc: ""
             },
@@ -355,7 +359,7 @@ $(function () {
 
     //vents.list();
 
-    /*$('select[name="search"]').select2({
+    $('select[name="search"]').select2({
             theme: "bootstrap4",
             language:  'es',
             allowClear: true,
@@ -366,7 +370,7 @@ $(function () {
                 data: function (params) {
                     var queryParameters = {
                         term: params.term,
-                        action: 'search_products'
+                        action: 'search_autocomplete'
                     }
 
                     return queryParameters;
@@ -382,12 +386,14 @@ $(function () {
             templateResult: formatRepo,
         }).on('select2:select', function (e) {
             var data = e.params.data;
+            if(!Number.isInteger(data.id)){
+                return false;
+            }
             data.cant = 1;
             data.subtotal = 0.00;
-            console.log(vents.items);
             vents.add(data);
             $(this).val('').trigger('change.select2');
-        });*/
+        });
 
         vents.list();
 });
