@@ -8,6 +8,13 @@ var vents = {
         total: 0.00,
         products: []
     },
+    get_ids: function () {
+        var ids = [];
+        $.each(this.items.products, function (key, value) {
+            ids.push(value.id);
+        });
+        return ids;
+    },
     calculate_invoice: function () {
         var subtotal = 0.00;
         var iva = $('input[name="iva"]').val();
@@ -37,13 +44,20 @@ var vents = {
             data: this.items.products,
             columns: [
                 {"data": "id"},
-                {"data": "name"},
-                {"data": "cat.name"},
+                {"data": "full_name"},
+                {"data": "stock"},
                 {"data": "pvp"},
                 {"data": "cant"},
                 {"data": "subtotal"},
             ],
             columnDefs: [
+                {
+                    targets: [-4],
+                    class: 'text-center',
+                    render: function (data, type, row) {
+                        return '<span class="badge badge-secondary">'+data+'</span>';
+                    }
+                },
                 {
                     targets: [0],
                     class: 'text-center',
@@ -81,7 +95,7 @@ var vents = {
 
                 $(row).find('input[name="cant"]').TouchSpin({
                     min: 1,
-                    max: 1000000000,
+                    max: data.stock,
                     step: 1
                 });
 
@@ -90,6 +104,9 @@ var vents = {
 
             }
         });
+        console.clear();
+        console.log(this.items);
+        console.log(this.get_ids());
     },
 };
 
@@ -111,8 +128,8 @@ function formatRepo(repo) {
         '<div class="col-lg-11 text-left shadow-sm">' +
         //'<br>' +
         '<p style="margin-bottom: 0;">' +
-        '<b>Nombre:</b> ' + repo.name + '<br>' +
-        '<b>Categoría:</b> ' + repo.cat.name + '<br>' +
+        '<b>Nombre:</b> ' + repo.full_name + '<br>' +
+        '<b>Stock:</b> ' + repo.stock + '<br>' +
         '<b>PVP:</b> <span class="badge badge-warning">$'+repo.pvp+'</span>'+
         '</p>' +
         '</div>' +
@@ -278,24 +295,33 @@ $(function () {
                 type: 'POST',
                 data: {
                     'action': 'search_products',
+                    'ids': JSON.stringify(vents.get_ids()),
                     'term': $('select[name="search"]').val()
                 },
                 dataSrc: ""
             },
             columns: [
-                {"data": "name"},
-                {"data": "cat.name"},
+                {"data": "full_name"},
                 {"data": "image"},
+                {"data": "stock"},
                 {"data": "pvp"},
                 {"data": "id"},
             ],
             columnDefs: [
                 {
-                    targets: [-3],
+                    targets: [-4],
                     class: 'text-center',
                     orderable: false,
                     render: function (data, type, row) {
                         return '<img src="' + data + '" class="img-fluid d-block mx-auto" style="width: 20px; height: 20px;">';
+                    }
+                },
+                {
+                    targets: [-3],
+                    class: 'text-center',
+                    orderable: false,
+                    render: function (data, type, row) {
+                        return '<span class="badge badge-secondary">'+data+'</span>';
                     }
                 },
                 {
@@ -330,6 +356,7 @@ $(function () {
             product.cant = 1;
             product.subtotal = 0.00;
             vents.add(product);
+            tblSearchProducts.row($(this).parents('tr')).remove().draw();
         });
 
     //event submit
@@ -370,7 +397,8 @@ $(function () {
                 data: function (params) {
                     var queryParameters = {
                         term: params.term,
-                        action: 'search_autocomplete'
+                        action: 'search_autocomplete',
+                        ids: JSON.stringify(vents.get_ids())
                     }
 
                     return queryParameters;
